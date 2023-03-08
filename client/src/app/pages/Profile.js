@@ -1,4 +1,5 @@
 import { useState, ChangeEvent, useCallback, useEffect } from "react";
+import * as Yup from "yup";
 import {
   Box,
   Tabs,
@@ -15,12 +16,21 @@ import {
   Typography,
   Divider,
   CardContent,
+  TextField,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import clsx from "clsx";
 import DoneTwoToneIcon from "@mui/icons-material/DoneTwoTone";
 import CloseIcon from "@mui/icons-material/Close";
 import Label from "../components/Label";
 import Text from "../components/Text";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useFormik } from "formik";
+import { ValidatePasswordSignIn } from "../Validations/Password.validation";
+import { ValidateEmail } from "../Validations/Email.validation";
 
 const TabsWrapper = styled(Tabs)(
   () => `
@@ -213,6 +223,31 @@ const PersonalInfo = () => {
   );
 };
 const SecuritySettingsTab = () => {
+  const [passwordReset, setPasswordReset] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const validate_password_singin = ValidatePasswordSignIn();
+  const validate_email = ValidateEmail();
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      terms: false,
+      submit: null,
+    },
+    validationSchema: Yup.object({
+      ...validate_email,
+      ...validate_password_singin,
+    }),
+    onSubmit: async (values, helpers) => {},
+  });
+
   return (
     <Grid container spacing={3}>
       <Grid item xs={12}>
@@ -227,29 +262,200 @@ const SecuritySettingsTab = () => {
                 p: 3,
               }}
             >
-              <Grid container>
-                <ListItemText
-                  primaryTypographyProps={{ variant: "h5", gutterBottom: true }}
-                  secondaryTypographyProps={{
-                    variant: "subtitle2",
-                    lineHeight: 1,
-                  }}
-                  primary="change password"
-                  secondary="You can click here to change your password."
-                />
-                <Button
-                  sx={{
-                    mt: {
-                      xs: 4, // apply margin top 4 on extra small screens
-                      md: 0,
-                    },
-                  }}
-                  variant="outlined"
-                  size="large"
+              {!passwordReset && (
+                <Grid container>
+                  <ListItemText
+                    primaryTypographyProps={{
+                      variant: "h5",
+                      gutterBottom: true,
+                    }}
+                    secondaryTypographyProps={{
+                      variant: "subtitle2",
+                      lineHeight: 1,
+                    }}
+                    primary="change password"
+                    secondary="You can click here to change your password."
+                  />
+                  <Button
+                    sx={{
+                      mt: {
+                        xs: 4, // apply margin top 4 on extra small screens
+                        md: 0,
+                      },
+                    }}
+                    onClick={() => setPasswordReset(true)}
+                    variant="outlined"
+                    size="large"
+                  >
+                    change password
+                  </Button>
+                </Grid>
+              )}
+              {passwordReset && (
+                <form
+                  style={{ width: "100%" }}
+                  noValidate
+                  onSubmit={formik.handleSubmit}
                 >
-                  change password
-                </Button>
-              </Grid>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        error={Boolean(
+                          formik.touched.password && formik.errors.password
+                        )}
+                        fullWidth
+                        margin="normal"
+                        helperText={
+                          formik.touched.password && formik.errors.password
+                        }
+                        name="password"
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
+                        type={showPassword ? "text" : "password"}
+                        value={formik.values.password}
+                        variant="outlined"
+                        placeholder="PASSWORD"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <LockOutlinedIcon />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        error={Boolean(
+                          formik.touched.password && formik.errors.password
+                        )}
+                        fullWidth
+                        margin="normal"
+                        helperText={
+                          formik.touched.password && formik.errors.password
+                        }
+                        name="password"
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
+                        type={showPassword ? "text" : "password"}
+                        value={formik.values.password}
+                        variant="outlined"
+                        placeholder="PASSWORD"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <LockOutlinedIcon />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <TextField
+                        error={Boolean(
+                          formik.touched.password && formik.errors.password
+                        )}
+                        fullWidth
+                        margin="normal"
+                        helperText={
+                          formik.touched.password && formik.errors.password
+                        }
+                        name="password"
+                        onBlur={formik.handleBlur}
+                        onChange={formik.handleChange}
+                        type={showPassword ? "text" : "password"}
+                        value={formik.values.password}
+                        variant="outlined"
+                        placeholder="PASSWORD"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">
+                              <LockOutlinedIcon />
+                            </InputAdornment>
+                          ),
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                              >
+                                {showPassword ? (
+                                  <VisibilityOff />
+                                ) : (
+                                  <Visibility />
+                                )}
+                              </IconButton>
+                            </InputAdornment>
+                          ),
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        sx={{
+                          mt: {
+                            xs: 4, // apply margin top 4 on extra small screens
+                            md: 0,
+                          },
+                          mr: 4,
+                        }}
+                        onClick={() => setPasswordReset(false)}
+                        variant="outlined"
+                        size="large"
+                      >
+                        cancel
+                      </Button>
+                      <Button
+                        sx={{
+                          mt: {
+                            xs: 4, // apply margin top 4 on extra small screens
+                            md: 0,
+                          },
+                        }}
+                        onClick={() => setPasswordReset(false)}
+                        variant="contained"
+                        size="large"
+                      >
+                        change password
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </form>
+              )}
             </ListItem>
             <Divider component="li" />
             <ListItem

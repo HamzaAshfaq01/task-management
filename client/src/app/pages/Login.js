@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as Yup from "yup";
-import { Link } from "react-router-dom"
+import { Link } from "react-router-dom";
 import {
   Box,
   Card,
@@ -61,7 +61,7 @@ function Login() {
       ...validate_email,
       ...validate_password_singin,
     }),
-    onSubmit: async (values, helpers) => { },
+    onSubmit: async (values, helpers) => {},
   });
   return (
     <Box
