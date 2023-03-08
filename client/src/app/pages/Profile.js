@@ -314,7 +314,7 @@ const SecuritySettingsTab = () => {
                         type={showPassword ? "text" : "password"}
                         value={formik.values.password}
                         variant="outlined"
-                        placeholder="PASSWORD"
+                        placeholder="OLD PASSWORD"
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -356,7 +356,7 @@ const SecuritySettingsTab = () => {
                         type={showPassword ? "text" : "password"}
                         value={formik.values.password}
                         variant="outlined"
-                        placeholder="PASSWORD"
+                        placeholder="NEW PASSWORD"
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
@@ -398,7 +398,7 @@ const SecuritySettingsTab = () => {
                         type={showPassword ? "text" : "password"}
                         value={formik.values.password}
                         variant="outlined"
-                        placeholder="PASSWORD"
+                        placeholder="CONFIRM NEW PASSWORD"
                         InputProps={{
                           startAdornment: (
                             <InputAdornment position="start">
