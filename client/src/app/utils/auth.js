@@ -23,7 +23,7 @@ export const removeCookie = (key) => {
 // Will be useful when we need to make request to server with token
 export const getCookie = (key) => {
   if (window !== "undefined") {
-    return cookie.get(key);
+    return cookie.get(key) && JSON.parse(cookie.get(key));
   }
 };
 
@@ -44,13 +44,13 @@ export const removeLocalStorage = (key) => {
 // Auth enticate user by passing data to cookie and localstorage during signin
 export const authenticate = (response) => {
   setCookie("token", response.token ? JSON.stringify(response.token) : null);
-  setLocalStorage("user", response.user ? response.user : null);
+  setLocalStorage("user", response.user ? JSON.stringify(response.user) : null);
 };
 
 // Access user info from localstorage
 export const isAuth = () => {
   if (window !== "undefined") {
-    const cookieChecked = getCookie("token") && JSON.parse(getCookie("token"));
+    const cookieChecked = getCookie("token");
 
     if (cookieChecked !== null && cookieChecked !== undefined) {
       // varify token

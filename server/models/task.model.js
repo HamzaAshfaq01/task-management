@@ -12,6 +12,17 @@ const taskScheama = new mongoose.Schema(
       type: String,
       required: true,
     },
+    priority: {
+      type: String,
+      default: "LOW",
+    },
+    due_date: {
+      type: String,
+    },
+    status: {
+      type: String,
+      default: "PENDING",
+    },
     description: String,
     creator: { type: String, required: true },
   },

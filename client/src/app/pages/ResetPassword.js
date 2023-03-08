@@ -1,6 +1,6 @@
-import { useState, forwardRef, Ref } from "react";
+import { useState, forwardRef, Ref, useEffect } from "react";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Box,
   Card,
@@ -23,10 +23,13 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckTwoToneIcon from "@mui/icons-material/CheckTwoTone";
 import { useFormik } from "formik";
+import { useDispatch, useSelector } from "react-redux";
 import {
   ValidateConfirmNewPassword,
   ValidateNewPassword,
 } from "../Validations/Password.validation";
+import BackDrop from "../components/Backdrop";
+import { resetpassword } from "../redux/actions/auth.action";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -70,6 +73,11 @@ const AvatarSuccess = styled(Avatar)(
 );
 
 function RecoverPasswordBasic() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { token } = useParams();
+  const isLoading = useSelector((state) => state.loading.loader);
+
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -97,6 +105,7 @@ function RecoverPasswordBasic() {
     initialValues: {
       new_password: "",
       confirm_new_password: "",
+      token: "",
       submit: null,
     },
     validationSchema: Yup.object({
@@ -104,213 +113,219 @@ function RecoverPasswordBasic() {
       ...validate_confirm_new_password,
     }),
     onSubmit: async (values) => {
-      // if (result.code === 200) {
-      // setOpenDialog(true);
-      // }
+      dispatch(resetpassword(values, navigate));
     },
   });
 
+  useEffect(() => {
+    formik.setFieldValue("token", token);
+  }, [token]);
+
   return (
-    <Box
-      component="div"
-      sx={{
-        minHeight: "80vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <MainContent>
-        <Container maxWidth="sm">
-          <Card
-            sx={{
-              mt: 3,
-              p: 4,
-            }}
-          >
-            <Box>
-              <Typography
-                variant="h2"
-                sx={{
-                  mb: 1,
-                }}
-              >
-                Reset Password
-              </Typography>
-              <Typography
-                variant="h4"
-                color="text.secondary"
-                fontWeight="normal"
-                sx={{
-                  mb: 3,
-                }}
-              >
-                Please enter a new password and confirm the new password.
-              </Typography>
-            </Box>
-
-            <form noValidate onSubmit={formik.handleSubmit}>
-              <TextField
-                error={Boolean(
-                  formik.touched.new_password && formik.errors.new_password
-                )}
-                fullWidth
-                margin="normal"
-                helperText={
-                  formik.touched.new_password && formik.errors.new_password
-                }
-                name="new_password"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                type={showNewPassword ? "text" : "password"}
-                value={formik.values.new_password}
-                variant="outlined"
-                placeholder="PASSWORD"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockOutlinedIcon />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickNewShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-              <TextField
-                error={Boolean(
-                  formik.touched.confirm_new_password &&
-                    formik.errors.confirm_new_password
-                )}
-                fullWidth
-                margin="normal"
-                helperText={
-                  formik.touched.confirm_new_password &&
-                  formik.errors.confirm_new_password
-                }
-                name="confirm_new_password"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                type={showConfirmPassword ? "text" : "password"}
-                value={formik.values.confirm_new_password}
-                variant="outlined"
-                placeholder="CONFIRM PASSWORD"
-                InputProps={{
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <LockOutlinedIcon />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton
-                        aria-label="toggle password visibility"
-                        onClick={handleClickConfirmShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        edge="end"
-                      >
-                        {showConfirmPassword ? (
-                          <VisibilityOff />
-                        ) : (
-                          <Visibility />
-                        )}
-                      </IconButton>
-                    </InputAdornment>
-                  ),
-                }}
-              />
-
-              <Button
-                sx={{ mt: 3 }}
-                startIcon={
-                  formik.isSubmitting ? <CircularProgress size="1rem" /> : null
-                }
-                disabled={Boolean(!formik.isValid || formik.isSubmitting)}
-                type="submit"
-                fullWidth
-                size="large"
-                variant="contained"
-                color="primary"
-              >
-                Save
-              </Button>
-            </form>
-          </Card>
-        </Container>
-      </MainContent>
-
-      <DialogWrapper
-        open={openDialog}
-        maxWidth="sm"
-        fullWidth
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseDialog}
+    <>
+      {BackDrop(isLoading)}
+      <Box
+        component="div"
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <Box
-          sx={{
-            px: 4,
-            pb: 4,
-            pt: 10,
-          }}
-        >
-          <AvatarSuccess>
-            <CheckTwoToneIcon />
-          </AvatarSuccess>
-
-          <Collapse in={openAlert}>
-            <Alert
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setOpenAlert(false);
+        <MainContent>
+          <Container maxWidth="sm">
+            <Card
+              sx={{
+                mt: 3,
+                p: 4,
+              }}
+            >
+              <Box>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    mb: 1,
                   }}
                 >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-              severity="info"
-            >
-              Please check your email.
-            </Alert>
-          </Collapse>
+                  Reset Password
+                </Typography>
+                <Typography
+                  variant="h4"
+                  color="text.secondary"
+                  fontWeight="normal"
+                  sx={{
+                    mb: 3,
+                  }}
+                >
+                  Please enter a new password and confirm the new password.
+                </Typography>
+              </Box>
 
-          <Typography
-            align="center"
+              <form noValidate onSubmit={formik.handleSubmit}>
+                <TextField
+                  error={Boolean(
+                    formik.touched.new_password && formik.errors.new_password
+                  )}
+                  fullWidth
+                  margin="normal"
+                  helperText={
+                    formik.touched.new_password && formik.errors.new_password
+                  }
+                  name="new_password"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  type={showNewPassword ? "text" : "password"}
+                  value={formik.values.new_password}
+                  variant="outlined"
+                  placeholder="PASSWORD"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockOutlinedIcon />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickNewShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+                <TextField
+                  error={Boolean(
+                    formik.touched.confirm_new_password &&
+                      formik.errors.confirm_new_password
+                  )}
+                  fullWidth
+                  margin="normal"
+                  helperText={
+                    formik.touched.confirm_new_password &&
+                    formik.errors.confirm_new_password
+                  }
+                  name="confirm_new_password"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={formik.values.confirm_new_password}
+                  variant="outlined"
+                  placeholder="CONFIRM PASSWORD"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LockOutlinedIcon />
+                      </InputAdornment>
+                    ),
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={handleClickConfirmShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          edge="end"
+                        >
+                          {showConfirmPassword ? (
+                            <VisibilityOff />
+                          ) : (
+                            <Visibility />
+                          )}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+
+                <Button
+                  sx={{ mt: 3 }}
+                  startIcon={
+                    formik.isSubmitting ? (
+                      <CircularProgress size="1rem" />
+                    ) : null
+                  }
+                  type="submit"
+                  fullWidth
+                  size="large"
+                  variant="contained"
+                  color="primary"
+                >
+                  Save
+                </Button>
+              </form>
+            </Card>
+          </Container>
+        </MainContent>
+
+        <DialogWrapper
+          open={openDialog}
+          maxWidth="sm"
+          fullWidth
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseDialog}
+        >
+          <Box
             sx={{
-              py: 4,
-              px: 10,
+              px: 4,
+              pb: 4,
+              pt: 10,
             }}
-            variant="h3"
           >
-            You will receive an email shortly to reset your password.
-          </Typography>
+            <AvatarSuccess>
+              <CheckTwoToneIcon />
+            </AvatarSuccess>
 
-          <Button
-            fullWidth
-            component={Link}
-            size="large"
-            variant="contained"
-            onClick={handleCloseDialog}
-            to="/auth/login"
-          >
-            Login again
-          </Button>
-        </Box>
-      </DialogWrapper>
-    </Box>
+            <Collapse in={openAlert}>
+              <Alert
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpenAlert(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                severity="info"
+              >
+                Please check your email.
+              </Alert>
+            </Collapse>
+
+            <Typography
+              align="center"
+              sx={{
+                py: 4,
+                px: 10,
+              }}
+              variant="h3"
+            >
+              You will receive an email shortly to reset your password.
+            </Typography>
+
+            <Button
+              fullWidth
+              component={Link}
+              size="large"
+              variant="contained"
+              onClick={handleCloseDialog}
+              to="/auth/login"
+            >
+              Login again
+            </Button>
+          </Box>
+        </DialogWrapper>
+      </Box>
+    </>
   );
 }
 

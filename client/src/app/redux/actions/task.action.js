@@ -11,10 +11,16 @@ import {
   GET_ERROR,
   CLEAR_MSG,
 } from "../constants";
+import { encryptData, decryptData } from "../../utils/crypto.util";
 
-// createTask ACTION
-export const createTask = (body) => async (dispatch) => {
+export const createTask = (values, closeAddTask) => async (dispatch) => {
   const token = getCookie("token");
+  let body = {
+    title: encryptData(values.title),
+    description: encryptData(values.description),
+    due_date: encryptData(values.due_date),
+    priority: encryptData(values.priority),
+  };
   try {
     dispatch(setLoading(true));
 
@@ -25,6 +31,7 @@ export const createTask = (body) => async (dispatch) => {
     });
     dispatch(clearLoading(false));
     dispatch({ type: GET_MSG, payload: data.message });
+    closeAddTask();
   } catch (err) {
     if (err.response) {
       const {
@@ -41,23 +48,88 @@ export const createTask = (body) => async (dispatch) => {
     dispatch(clearLoading(false));
   }
 };
-// getUserTaks ACTION
-export const getUserTasks = () => async (dispatch) => {
+export const getUserTasks =
+  (limit = "5", offset = "0", status = "") =>
+  async (dispatch) => {
+    const token = getCookie("token");
+    try {
+      dispatch(setLoading(true));
+
+      const { data } = await axios.get(
+        `/tasks?limit=${limit}&offset=${offset}&status=${status}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      dispatch(clearLoading(false));
+      dispatch({
+        type: GET_USER_TASK_SUCCESS,
+        payload: data,
+      });
+    } catch (err) {
+      if (err.response) {
+        const {
+          response: {
+            data: { error },
+          },
+        } = err;
+
+        dispatch({
+          type: GET_ERROR,
+          payload: error,
+        });
+      }
+      dispatch(clearLoading(false));
+    }
+  };
+export const updateTask = (taskID, values,closeAddTask) => async (dispatch) => {
   const token = getCookie("token");
+  let body = {};
+  if (values.title) {
+    body = {
+      ...body,
+      title: encryptData(values.title),
+    };
+  }
+  if (values.description) {
+    body = {
+      ...body,
+      description: encryptData(values.description),
+    };
+  }
+  if (values.due_date) {
+    body = {
+      ...body,
+      due_date: encryptData(values.due_date),
+    };
+  }
+  if (values.priority) {
+    body = {
+      ...body,
+      priority: encryptData(values.priority),
+    };
+  }
+  if (values.status) {
+    body = {
+      ...body,
+      status: encryptData(values.status),
+    };
+  }
+
   try {
     dispatch(setLoading(true));
 
-    const { data } = await axios.get("/tasks", {
+    const { data } = await axios.patch(`/task/${taskID}`, body, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     dispatch(clearLoading(false));
-    dispatch({
-      type: GET_USER_TASK_SUCCESS,
-      payload: data.tasks,
-    });
+    dispatch({ type: GET_MSG, payload: data.message });
+    closeAddTask()
   } catch (err) {
     if (err.response) {
       const {
@@ -65,7 +137,7 @@ export const getUserTasks = () => async (dispatch) => {
           data: { error },
         },
       } = err;
-
+      console.log(error, "task creation error");
       dispatch({
         type: GET_ERROR,
         payload: error,
@@ -74,18 +146,18 @@ export const getUserTasks = () => async (dispatch) => {
     dispatch(clearLoading(false));
   }
 };
-// Get Task Detail ACTION
-export const getTaskDetail = (id) => async (dispatch) => {
+export const deleteTaskByID = (id, closeConfirmDelete) => async (dispatch) => {
+  const token = getCookie("token");
   try {
     dispatch(setLoading(true));
-
-    const { data } = await axios.get(`/task/${id}`);
-
-    dispatch(clearLoading(false));
-    dispatch({
-      type: GET_TASK_DETAIL_SUCCESS,
-      payload: data.taskDetail,
+    const { data } = await axios.delete(`/task/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
+    dispatch(clearLoading(false));
+    dispatch({ type: GET_MSG, payload: data.message });
+    closeConfirmDelete();
   } catch (err) {
     if (err.response) {
       const {

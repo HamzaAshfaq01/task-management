@@ -1,7 +1,5 @@
-import express from "express"
+import express from "express";
 const router = express.Router();
-
-// Load Controllers
 import {
   registerController,
   activationController,
@@ -12,16 +10,10 @@ import {
 } from "../controllers/auth.controller.js";
 
 router.post("/register", registerController);
-
 router.post("/login", signinController);
-
 router.post("/activation", activationController);
-
-// forgot reset password
 router.put("/forgotpassword", forgotPasswordController);
-router.put("/resetpassword", resetPasswordController);
-
-// Google and Facebook Login
+router.put("/resetpassword/:token", resetPasswordController);
 router.post("/googlelogin", googleController);
 
 export default router;

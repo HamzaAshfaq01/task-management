@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
 import {
@@ -21,11 +21,20 @@ import MailIcon from "@mui/icons-material/Mail";
 import LoginIcon from "@mui/icons-material/Login";
 import LogoutIcon from "@mui/icons-material/ExitToApp";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
+import { useDispatch } from "react-redux";
+import { logout } from "../redux/actions/auth.action";
 
 const drawerWidth = 240;
 
 export default function MiniDrawer({ mobileOpen, handleDrawerToggle, window }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const theme = useTheme();
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
+  const handleLogout = () => {
+    dispatch(logout(navigate));
+  };
   const drawer = (
     <div>
       <Toolbar />
@@ -61,49 +70,83 @@ export default function MiniDrawer({ mobileOpen, handleDrawerToggle, window }) {
       </List>
       <Divider />
       <List>
-        {[
-          {
-            lable: "Register",
-            Icon: PersonAddAlt1Icon,
-            link: "auth/registration",
-          },
-          { lable: "Login", Icon: LoginIcon, link: "auth/login" },
-          { lable: "Logout", Icon: LogoutIcon, link: "" },
-        ].map(({ lable, Icon, link }, index) => (
-          <Link to={link} key={index}>
-            <ListItem disablePadding sx={{ display: "block" }}>
-              <ListItemButton
+        <Link to="auth/registration">
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: "initial",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
                 sx={{
-                  minHeight: 48,
-                  justifyContent: "initial",
-                  px: 2.5,
+                  minWidth: 0,
+                  mr: 3,
+                  justifyContent: "center",
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: 3,
-                    justifyContent: "center",
-                  }}
-                >
-                  <Icon />
-                </ListItemIcon>
-                <ListItemText primary={lable} sx={{ opacity: 1 }} />
-              </ListItemButton>
-            </ListItem>
-          </Link>
-        ))}
+                <PersonAddAlt1Icon />
+              </ListItemIcon>
+              <ListItemText primary="Register" sx={{ opacity: 1 }} />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <Link to="auth/login">
+          <ListItem disablePadding sx={{ display: "block" }}>
+            <ListItemButton
+              sx={{
+                minHeight: 48,
+                justifyContent: "initial",
+                px: 2.5,
+              }}
+            >
+              <ListItemIcon
+                sx={{
+                  minWidth: 0,
+                  mr: 3,
+                  justifyContent: "center",
+                }}
+              >
+                <LoginIcon />
+              </ListItemIcon>
+              <ListItemText primary="Login" sx={{ opacity: 1 }} />
+            </ListItemButton>
+          </ListItem>
+        </Link>
+        <ListItem disablePadding sx={{ display: "block" }}>
+          <ListItemButton
+            sx={{
+              minHeight: 48,
+              justifyContent: "initial",
+              px: 2.5,
+            }}
+            onClick={handleLogout}
+          >
+            <ListItemIcon
+              sx={{
+                minWidth: 0,
+                mr: 3,
+                justifyContent: "center",
+              }}
+            >
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" sx={{ opacity: 1 }} />
+          </ListItemButton>
+        </ListItem>
       </List>
     </div>
   );
 
-  const container =
-    window !== undefined ? () => window().document.body : undefined;
-
   return (
     <Box
       component="nav"
-      sx={{display: { xs: "none", md: "block" }, width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      sx={{
+        display: { xs: "none", md: "block" },
+        width: { sm: drawerWidth },
+        flexShrink: { sm: 0 },
+      }}
       aria-label="mailbox folders"
     >
       <CssBaseline />

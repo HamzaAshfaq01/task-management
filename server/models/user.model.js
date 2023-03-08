@@ -1,5 +1,6 @@
-import mongoose from 'mongoose';
-import crypto from "crypto"
+import mongoose from "mongoose";
+import crypto from "crypto";
+import { decryptData } from "../utils/crypto.util.js";
 // user schema
 const userScheama = new mongoose.Schema(
   {
@@ -8,60 +9,60 @@ const userScheama = new mongoose.Schema(
       trim: true,
       required: true,
       unique: true,
-      lowercase: true
+      lowercase: true,
     },
     name: {
       type: String,
       trim: true,
-      required: true
+      required: true,
     },
     hashed_password: {
       type: String,
-      required: true
+      required: true,
     },
     salt: String,
     resetPasswordLink: {
       data: String,
-    }
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
 // virtual
 userScheama
-  .virtual('password')
-  .set(function(password) {
+  .virtual("password")
+  .set(function (password) {
     this._password = password;
     this.salt = this.makeSalt();
     this.hashed_password = this.encryptPassword(password);
   })
-  .get(function() {
+  .get(function () {
     return this._password;
   });
 
 // methods
 userScheama.methods = {
-  authenticate: function(plainText) {
+  authenticate: function (plainText) {
     return this.encryptPassword(plainText) === this.hashed_password;
   },
 
-  encryptPassword: function(password) {
-    if (!password) return '';
+  encryptPassword: function (password) {
+    if (!password) return "";
     try {
       return crypto
-        .createHmac('sha1', this.salt)
+        .createHmac("sha1", this.salt)
         .update(password)
-        .digest('hex');
+        .digest("hex");
     } catch (err) {
-      return '';
+      return "";
     }
   },
 
-  makeSalt: function() {
-    return Math.round(new Date().valueOf() * Math.random()) + '';
-  }
+  makeSalt: function () {
+    return Math.round(new Date().valueOf() * Math.random()) + "";
+  },
 };
 
-export default mongoose.model('User', userScheama);
+export default mongoose.model("User", userScheama);

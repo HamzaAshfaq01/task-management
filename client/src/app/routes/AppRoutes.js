@@ -6,13 +6,12 @@ import AuthRoutes from "./AuthRoutes.js";
 import PrivateRoutes from "./PrivateRoutes";
 
 const AppRoutes = () => {
-  // const { user, isAuthenticated } = useSelector((state) => state.auth);
-  let isAuthenticated = true;
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
   return (
     <BrowserRouter basename="/">
       <Routes>
         <Route element={<App />}>
-          {isAuthenticated ? (
+          {user && isAuthenticated ? (
             <>
               <Route path="/*" element={<PrivateRoutes />} />
               <Route index element={<Navigate to="user/profile" />} />

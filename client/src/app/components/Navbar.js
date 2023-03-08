@@ -6,18 +6,13 @@ import Typography from "@mui/material/Typography";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
-import AdbIcon from "@mui/icons-material/Adb";
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
-import { Link } from "react-router-dom";
-
-const settings = [
-  { label: "Profile", link: "/user/profile" },
-  { lable: "Logout", link: "" },
-];
+import { Link, useNavigate } from "react-router-dom";
+import { logout } from "../redux/actions/auth.action";
+import { useDispatch } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -40,6 +35,8 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function Navbar({ open, handleDrawerToggle }) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -56,6 +53,10 @@ export default function Navbar({ open, handleDrawerToggle }) {
 
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
+  };
+  const handleLogout = () => {
+    dispatch(logout(navigate));
+    handleCloseUserMenu();
   };
   return (
     <AppBar
@@ -119,7 +120,7 @@ export default function Navbar({ open, handleDrawerToggle }) {
             <MenuItem onClick={handleCloseUserMenu}>
               <Link to="/user/profile">Profile</Link>
             </MenuItem>
-            <MenuItem onClick={handleCloseUserMenu}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </Box>
       </Toolbar>

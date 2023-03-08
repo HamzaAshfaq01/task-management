@@ -21,6 +21,7 @@ import {
   IconButton,
 } from "@mui/material";
 import clsx from "clsx";
+import { useDispatch, useSelector } from "react-redux";
 import DoneTwoToneIcon from "@mui/icons-material/DoneTwoTone";
 import CloseIcon from "@mui/icons-material/Close";
 import Label from "../components/Label";
@@ -29,8 +30,12 @@ import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useFormik } from "formik";
-import { ValidatePasswordSignIn } from "../Validations/Password.validation";
-import { ValidateEmail } from "../Validations/Email.validation";
+import BackDrop from "../components/Backdrop";
+import { updateProfile } from "../redux/actions/auth.action";
+import {
+  ValidateConfirmNewPassword,
+  ValidateNewPassword,
+} from "../Validations/Password.validation.js";
 
 const TabsWrapper = styled(Tabs)(
   () => `
@@ -83,8 +88,8 @@ const TextWrapper = styled("span")(
 );
 
 function ManagementUsersView() {
-  const [users, setUsers] = useState();
-  const [openBackdrop, setOpenBackdrop] = useState(false);
+  const isLoading = useSelector((state) => state.loading.loader);
+
   const [currentTab, setCurrentTab] = useState("user_information");
   const [tabs, setTabs] = useState([
     { value: "user_information", label: "User Information" },
@@ -96,7 +101,7 @@ function ManagementUsersView() {
 
   return (
     <>
-      {/* {SimpleBackdrop(openBackdrop)} */}
+      {BackDrop(isLoading)}
       <Box sx={{ mt: 3 }}>
         <Grid
           sx={{ px: 4 }}
@@ -223,6 +228,10 @@ const PersonalInfo = () => {
   );
 };
 const SecuritySettingsTab = () => {
+  const dispatch = useDispatch();
+
+  const user = useSelector((state) => state.auth.user);
+
   const [passwordReset, setPasswordReset] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
@@ -232,20 +241,26 @@ const SecuritySettingsTab = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
-  const validate_password_singin = ValidatePasswordSignIn();
-  const validate_email = ValidateEmail();
+  const validate_new_password = ValidateNewPassword();
+  const validate_old_password = ValidateNewPassword();
+  const validate_confirm_new_password = ValidateConfirmNewPassword();
+
   const formik = useFormik({
     initialValues: {
-      email: "",
-      password: "",
-      terms: false,
-      submit: null,
+      old_password: "",
+      new_password: "",
+      confirm_new_password: "",
     },
     validationSchema: Yup.object({
-      ...validate_email,
-      ...validate_password_singin,
+      ...validate_old_password,
+      ...validate_new_password,
+      ...validate_confirm_new_password,
     }),
-    onSubmit: async (values, helpers) => {},
+    onSubmit: async (values) => {
+      dispatch(updateProfile(user._id, values)).then(() => {
+        setPasswordReset(false);
+      });
+    },
   });
 
   return (
@@ -301,14 +316,16 @@ const SecuritySettingsTab = () => {
                     <Grid item xs={12} sm={4}>
                       <TextField
                         error={Boolean(
-                          formik.touched.password && formik.errors.password
+                          formik.touched.old_password &&
+                            formik.errors.old_password
                         )}
                         fullWidth
                         margin="normal"
                         helperText={
-                          formik.touched.password && formik.errors.password
+                          formik.touched.old_password &&
+                          formik.errors.old_password
                         }
-                        name="password"
+                        name="old_password"
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
                         type={showPassword ? "text" : "password"}
@@ -343,14 +360,16 @@ const SecuritySettingsTab = () => {
                     <Grid item xs={12} sm={4}>
                       <TextField
                         error={Boolean(
-                          formik.touched.password && formik.errors.password
+                          formik.touched.new_password &&
+                            formik.errors.new_password
                         )}
                         fullWidth
                         margin="normal"
                         helperText={
-                          formik.touched.password && formik.errors.password
+                          formik.touched.new_password &&
+                          formik.errors.new_password
                         }
-                        name="password"
+                        name="new_password"
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
                         type={showPassword ? "text" : "password"}
@@ -385,14 +404,16 @@ const SecuritySettingsTab = () => {
                     <Grid item xs={12} sm={4}>
                       <TextField
                         error={Boolean(
-                          formik.touched.password && formik.errors.password
+                          formik.touched.confirm_new_password &&
+                            formik.errors.confirm_new_password
                         )}
                         fullWidth
                         margin="normal"
                         helperText={
-                          formik.touched.password && formik.errors.password
+                          formik.touched.confirm_new_password &&
+                          formik.errors.confirm_new_password
                         }
-                        name="password"
+                        name="confirm_new_password"
                         onBlur={formik.handleBlur}
                         onChange={formik.handleChange}
                         type={showPassword ? "text" : "password"}
@@ -446,7 +467,10 @@ const SecuritySettingsTab = () => {
                             md: 0,
                           },
                         }}
-                        onClick={() => setPasswordReset(false)}
+                        disabled={Boolean(
+                          !formik.isValid || formik.isSubmitting
+                        )}
+                        type="submit"
                         variant="contained"
                         size="large"
                       >

@@ -22,8 +22,11 @@ import { useFormik } from "formik";
 import { TransitionProps } from "@mui/material/transitions";
 import CheckTwoToneIcon from "@mui/icons-material/CheckTwoTone";
 import CloseIcon from "@mui/icons-material/Close";
+import { useDispatch, useSelector } from "react-redux";
 
 import { ValidateEmail } from "../Validations/Email.validation";
+import { forgotpassword } from "../redux/actions/auth.action";
+import BackDrop from "../components/Backdrop";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -67,6 +70,9 @@ const AvatarSuccess = styled(Avatar)(
 );
 
 function ForgotPassword() {
+  const dispatch = useDispatch();
+  const isLoading = useSelector((state) => state.loading.loader);
+
   const [openAlert, setOpenAlert] = useState(true);
   const [openDialog, setOpenDialog] = useState(false);
   const validate_email = ValidateEmail();
@@ -84,159 +90,162 @@ function ForgotPassword() {
       ...validate_email,
     }),
     onSubmit: async (values) => {
-      // if (result.code === 200) {
-      //     setOpenDialog(true);
-      //   }
+      dispatch(forgotpassword(values.email));
     },
   });
 
   return (
-    <Box
-      component="div"
-      sx={{
-        minHeight: "80vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <MainContent>
-        <Container maxWidth="sm">
-          <Card
-            sx={{
-              mt: 3,
-              p: 4,
-            }}
-          >
-            <Box>
-              <Typography
-                variant="h2"
-                sx={{
-                  mb: 1,
-                }}
-              >
-                Forgot password
-              </Typography>
-              <Typography
-                variant="h4"
-                color="text.secondary"
-                fontWeight="normal"
-                sx={{
-                  mb: 3,
-                }}
-              >
-                Please enter your email to reset your password.
-              </Typography>
-            </Box>
-
-            <form noValidate onSubmit={formik.handleSubmit}>
-              <TextField
-                error={Boolean(formik.touched.email && formik.errors.email)}
-                fullWidth
-                helperText={formik.touched.email && formik.errors.email}
-                label="EMAIL"
-                name="email"
-                onBlur={formik.handleBlur}
-                onChange={formik.handleChange}
-                type="email"
-                value={formik.values.email}
-                variant="outlined"
-              />
-              <Button
-                sx={{ mt: 3 }}
-                startIcon={
-                  formik.isSubmitting ? <CircularProgress size="1rem" /> : null
-                }
-                disabled={Boolean(!formik.isValid || formik.isSubmitting)}
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-                color="primary"
-              >
-                Reset password
-              </Button>
-            </form>
-          </Card>
-          <Box mt={3} textAlign="right">
-            <Typography
-              component="span"
-              variant="subtitle2"
-              color="text.primary"
-              fontWeight="bold"
-            >
-              Want to login again &nbsp;
-            </Typography>
-            <Link className="text-primary" to="/auth/login">
-              <b>Sign In</b>
-            </Link>
-          </Box>
-        </Container>
-      </MainContent>
-
-      <DialogWrapper
-        open={openDialog}
-        maxWidth="sm"
-        fullWidth
-        TransitionComponent={Transition}
-        keepMounted
-        onClose={handleCloseDialog}
+    <>
+      {BackDrop(isLoading)}
+      <Box
+        component="div"
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
       >
-        <Box
-          sx={{
-            px: 4,
-            pb: 4,
-            pt: 10,
-          }}
-        >
-          <AvatarSuccess>
-            <CheckTwoToneIcon />
-          </AvatarSuccess>
-
-          <Collapse in={openAlert}>
-            <Alert
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setOpenAlert(false);
+        <MainContent>
+          <Container maxWidth="sm">
+            <Card
+              sx={{
+                mt: 3,
+                p: 4,
+              }}
+            >
+              <Box>
+                <Typography
+                  variant="h2"
+                  sx={{
+                    mb: 1,
                   }}
                 >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-              severity="info"
-            >
-              Please check your email.
-            </Alert>
-          </Collapse>
+                  Forgot password
+                </Typography>
+                <Typography
+                  variant="h4"
+                  color="text.secondary"
+                  fontWeight="normal"
+                  sx={{
+                    mb: 3,
+                  }}
+                >
+                  Please enter your email to reset your password.
+                </Typography>
+              </Box>
 
-          <Typography
-            align="center"
+              <form noValidate onSubmit={formik.handleSubmit}>
+                <TextField
+                  error={Boolean(formik.touched.email && formik.errors.email)}
+                  fullWidth
+                  helperText={formik.touched.email && formik.errors.email}
+                  label="EMAIL"
+                  name="email"
+                  onBlur={formik.handleBlur}
+                  onChange={formik.handleChange}
+                  type="email"
+                  value={formik.values.email}
+                  variant="outlined"
+                />
+                <Button
+                  sx={{ mt: 3 }}
+                  startIcon={
+                    formik.isSubmitting ? (
+                      <CircularProgress size="1rem" />
+                    ) : null
+                  }
+                  disabled={Boolean(!formik.isValid || formik.isSubmitting)}
+                  fullWidth
+                  size="large"
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                >
+                  Reset password
+                </Button>
+              </form>
+            </Card>
+            <Box mt={3} textAlign="right">
+              <Typography
+                component="span"
+                variant="subtitle2"
+                color="text.primary"
+                fontWeight="bold"
+              >
+                Want to login again &nbsp;
+              </Typography>
+              <Link className="text-primary" to="/auth/login">
+                <b>Sign In</b>
+              </Link>
+            </Box>
+          </Container>
+        </MainContent>
+
+        <DialogWrapper
+          open={openDialog}
+          maxWidth="sm"
+          fullWidth
+          TransitionComponent={Transition}
+          keepMounted
+          onClose={handleCloseDialog}
+        >
+          <Box
             sx={{
-              py: 4,
-              px: 10,
+              px: 4,
+              pb: 4,
+              pt: 10,
             }}
-            variant="h3"
           >
-            You will receive an email shortly to reset your password.
-          </Typography>
+            <AvatarSuccess>
+              <CheckTwoToneIcon />
+            </AvatarSuccess>
 
-          <Button
-            fullWidth
-            component={Link}
-            size="large"
-            variant="contained"
-            onClick={handleCloseDialog}
-            to="/auth/login"
-          >
-            login again
-          </Button>
-        </Box>
-      </DialogWrapper>
-    </Box>
+            <Collapse in={openAlert}>
+              <Alert
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setOpenAlert(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                severity="info"
+              >
+                Please check your email.
+              </Alert>
+            </Collapse>
+
+            <Typography
+              align="center"
+              sx={{
+                py: 4,
+                px: 10,
+              }}
+              variant="h3"
+            >
+              You will receive an email shortly to reset your password.
+            </Typography>
+
+            <Button
+              fullWidth
+              component={Link}
+              size="large"
+              variant="contained"
+              onClick={handleCloseDialog}
+              to="/auth/login"
+            >
+              login again
+            </Button>
+          </Box>
+        </DialogWrapper>
+      </Box>
+    </>
   );
 }
 

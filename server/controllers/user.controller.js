@@ -1,60 +1,45 @@
-import User from "../models/user.model.js"
+import User from "../models/user.model.js";
+import { decryptData } from "../utils/crypto.util.js";
 
 export const readController = (req, res) => {
-	const userId = req.params.id;
-	User.findById(userId).exec((err, user) => {
-		if (err || !user) {
-			return res.status(400).json({
-				error: 'User not found',
-			});
-		}
-		user.hashed_password = undefined;
-		user.salt = undefined;
-		res.json(user);
-	});
+  const userId = req.params.id;
+  User.findById(userId).exec((err, user) => {
+    if (err || !user) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    }
+    user.hashed_password = undefined;
+    user.salt = undefined;
+    res.json(user);
+  });
 };
 export const updateController = async (req, res) => {
-	const { name, password } = req.body;
-
-	const user = await User.findById(req.user._id);
-
-	if (!user)
-		return res.status(400).json({
-			error: 'User not found',
-		});
-	if (!name) {
-		return res.status(400).json({
-			error: 'Name is required',
-		});
-	} else {
-		user.name = name;
-	}
-	if (password) {
-		if (password.length < 6) {
-			return res.status(400).json({
-				error: 'Password should be min 6 characters long',
-			});
-		} else {
-			user.password = password;
-		}
-	}
-
-	user.save((err, updatedUser) => {
-		console.log(updatedUser);
-		if (err) {
-			return res.status(400).json({
-				error: 'User update failed',
-			});
-		}
-		const { email, name, role, _id } = updatedUser;
-		res.json({
-			message: 'Updated Succesfully',
-			user: {
-				email,
-				name,
-				role,
-				_id,
-			},
-		});
-	});
+  const { password, old_password } = req.body;
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(400).json({
+        error: "User not found",
+      });
+    }
+    if (old_password && password) {
+      let isMatched = !user.authenticate(decryptData(old_password));
+      if (isMatched) {
+        return res.status(400).json({
+          error: "Old password is not correct.",
+        });
+      }
+      user.password = decryptData(password);
+      await user.save();
+    }
+    return res.status(201).json({
+      message: "Updated Succesfully",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      error: "Something went wrong. Please try again later",
+    });
+  }
 };

@@ -1,4 +1,5 @@
 import dotenv from "dotenv"
+dotenv.config()
 import express from "express"
 import morgan from "morgan";
 import cors from "cors";
@@ -8,18 +9,17 @@ import connectDB from "./config/db.config.js";
 import authRouter from "./routes/auth.routes.js"
 import userRouter from "./routes/user.routes.js"
 import taskRouter from "./routes/task.routes.js"
+import { PORT, CLIENT_URL, NODE_ENV } from "./constants/config.const.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 global.__basedir = __dirname;
-
-dotenv.config()
 
 const app = express();
 app.use(express.json());
 connectDB();
 app.use(
   cors({
-    origin: process.env.CLIENT_URL,
+    CLIENT_URL,
     credentials: true, //access-control-allow-credentials:true
   })
 );
@@ -45,18 +45,18 @@ app.use((req, res) => {
 });
 
 // Serve static assets if in production
-if (process.env.NODE_ENV === "PRODUCTION") {
+if (NODE_ENV === "PRODUCTION") {
   // Set static folder
   app.use(express.static("../client/build"));
   app.use(express.static(path.join(__dirname, "./uploads")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../' , "client", "build", "index.html"));
+    res.sendFile(path.resolve(__dirname, '../', "client", "build", "index.html"));
   });
 }
 
-const PORT = process.env.PORT || 5000;
+const SERVER_PORT = PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running on port ${SERVER_PORT}`);
 });

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Card,
@@ -18,12 +18,16 @@ import {
   InputAdornment,
   IconButton,
 } from "@mui/material";
+import { GoogleLogin } from "react-google-login";
+import { useSelector, useDispatch } from "react-redux";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { ValidatePasswordSignIn } from "../Validations/Password.validation";
 import { ValidateEmail } from "../Validations/Email.validation";
+import LoginWithOtherProvider from "./LoginWithOtherProvider";
+import { login } from "../redux/actions/auth.action";
 
 const MainContent = styled(Box)(
   () => `
@@ -37,6 +41,10 @@ const MainContent = styled(Box)(
 );
 
 function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isLoading = useSelector((state) => state.loading.loader);
+
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () => {
@@ -61,14 +69,18 @@ function Login() {
       ...validate_email,
       ...validate_password_singin,
     }),
-    onSubmit: async (values, helpers) => {},
+    onSubmit: async (values, helpers) => {
+      dispatch(login(values, helpers.resetForm, navigate));
+    },
   });
+
   return (
     <Box
       component="div"
       sx={{
         minHeight: "80vh",
         display: "flex",
+        flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
       }}
@@ -228,6 +240,7 @@ function Login() {
               </Grid>
             </Grid>
           </Card>
+          {/* <LoginWithOtherProvider /> */}
         </Container>
       </MainContent>
     </Box>
