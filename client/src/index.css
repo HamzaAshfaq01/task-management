@@ -1,0 +1,16 @@
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
+.text-primary {
+  color: #5569ff;
+}
+
+.text-white {
+  color: white;
+}
