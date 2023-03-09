@@ -69,14 +69,6 @@ MIT
 [df1]: http://daringfireball.net/projects/markdown/
 [markdown-it]: https://github.com/markdown-it/markdown-it
 
-[MaterialUI]: <https://mui.com/
-[node.js]: <https://nodejs.org>
-[Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-[jQuery]: <http://jquery.com>
-[@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-[express]: <http://expressjs.com>
-[ReactJS]: <http://reactjs.org/>
-[Gulp]: <http://gulpjs.com>
 
 [pldb]: https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md
 [plgh]: https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md
