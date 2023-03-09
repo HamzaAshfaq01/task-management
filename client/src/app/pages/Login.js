@@ -127,6 +127,7 @@ function Login() {
                 value={formik.values.email}
                 variant="outlined"
                 placeholder="EMAIL"
+                data-testid="email"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -149,6 +150,7 @@ function Login() {
                 value={formik.values.password}
                 variant="outlined"
                 placeholder="PASSWORD"
+                data-testid="password"
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -213,6 +215,7 @@ function Login() {
                 type="submit"
                 color="primary"
                 variant="contained"
+                data-testid="submit"
               >
                 Sign In
               </Button>

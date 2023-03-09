@@ -144,6 +144,7 @@ function Register() {
                   value={formik.values.first_name}
                   variant="outlined"
                   placeholder="NAME"
+                  data-testid='name'
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -164,6 +165,7 @@ function Register() {
                   value={formik.values.email}
                   variant="outlined"
                   placeholder="EMAIL"
+                  data-testid='email'
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -188,6 +190,7 @@ function Register() {
                   value={formik.values.new_password}
                   variant="outlined"
                   placeholder="PASSWORD"
+                  data-testid='password'
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -226,6 +229,7 @@ function Register() {
                   value={formik.values.confirm_new_password}
                   variant="outlined"
                   placeholder="CONFIRM PASSWORD"
+                  data-testid='confirm_password'
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">
@@ -267,6 +271,7 @@ function Register() {
                   size="large"
                   type="submit"
                   color="primary"
+                  data-testid="submit"
                   variant="contained"
                 >
                   Sign Up
