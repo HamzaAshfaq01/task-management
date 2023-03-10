@@ -59,7 +59,6 @@ export const registerController = async (req, res) => {
     });
   }
 };
-
 export const activationController = async (req, res) => {
   const { token } = req.body;
   if (token) {

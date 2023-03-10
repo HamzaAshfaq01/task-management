@@ -20,7 +20,7 @@ const SendMail = (options, res) => {
         error: "Something is wrong! Please try",
       });
     } else {
-      return res.json({
+      return res.status(200).json({
         message: `Email has been sent to ${options.to}`,
       });
     }
