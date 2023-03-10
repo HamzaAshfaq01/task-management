@@ -7,6 +7,7 @@
   "scripts": {
     "server": "nodemon server/index.js",
     "client": "npm start --prefix client",
+    "test": "mocha",
     "dev": "concurrently \"npm run server\" \"npm run client\""
   },
   "repository": {
@@ -21,6 +22,8 @@
   },
   "homepage": "https://github.com/HamzaAshfaq01/task-management#readme",
   "dependencies": {
+    "chai": "^4.3.7",
+    "chai-http": "^4.3.0",
     "concurrently": "^7.6.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
@@ -33,5 +36,8 @@
     "morgan": "^1.10.0",
     "node-fetch": "^3.3.0",
     "nodemailer": "^6.9.1"
+  },
+  "devDependencies": {
+    "mocha": "^10.2.0"
   }
 }

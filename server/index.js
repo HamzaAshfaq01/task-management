@@ -60,3 +60,5 @@ const SERVER_PORT = PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${SERVER_PORT}`);
 });
+
+export default app;
