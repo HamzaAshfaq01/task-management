@@ -4,15 +4,15 @@ import Task from "../models/task.model.js";
 export const createTaskController = async (req, res) => {
   const { title, description, due_date, priority } = req.body;
   try {
-    await Task.create({
+    const task = await Task.create({
       user: req.user._id,
       title: decryptData(title),
       description: decryptData(description),
       due_date: decryptData(due_date),
-      periority: decryptData(priority),
+      priority: decryptData(priority),
       creator: req.user.name,
     });
-    return res.json({ message: "Task Successfull created" });
+    return res.status(200).json({ message: "Task Successfull created",task });
   } catch (error) {
     return res.status(400).json({
       error: "Task Creation Failed. Please try again",

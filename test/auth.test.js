@@ -3,6 +3,7 @@ import chaiHttp from "chai-http";
 import jwt from "jsonwebtoken";
 import app from "../server/index.js";
 import User from "../server/models/user.model.js";
+import Task from "../server/models/task.model.js";
 import { encryptData, decryptData } from "../server/utils/crypto.util.js";
 
 const expect = chai.expect;
@@ -77,12 +78,28 @@ describe("Task Route", function () {
     }
   );
   this.timeout(5000);
-  let testUser;
-  it("should return an task detail using their Task ID", async () => {
+  let taskId;
+  it("should create a task successfully", async () => {
     const res = await chai
       .request(app)
-      .delete("/api/task/6408b5a2b15231614891eacd")
+      .post("/api/create/task")
+      .send({
+        title: encryptData("My First Task"),
+        description: encryptData("My First Task"),
+        due_date: encryptData("2023-5-10"),
+        priority: encryptData("LOW"),
+      })
       .set("Authorization", "Bearer " + token);
+    taskId = res.body.task._id;
+    expect(res.status).to.equal(200);
+    expect(res.body.message).include("Task Successfull created");
+  });
+  it("should delete an task using their Task ID", async () => {
+    const res = await chai
+      .request(app)
+      .delete(`/api/task/${taskId}`)
+      .set("Authorization", "Bearer " + token);
+    console.log(res.message);
     expect(res.status).to.equal(200);
     expect(res.body.message).include("Task Deleted");
   });
