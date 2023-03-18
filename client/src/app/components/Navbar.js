@@ -14,6 +14,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { logout } from "../redux/actions/auth.action";
 import { useDispatch } from "react-redux";
 
+import { useAuth0 } from "@auth0/auth0-react";
+
 const drawerWidth = 240;
 
 const AppBar = styled(MuiAppBar, {
@@ -35,6 +37,7 @@ const AppBar = styled(MuiAppBar, {
 }));
 
 export default function Navbar({ open, handleDrawerToggle }) {
+  const { logout } = useAuth0();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
@@ -120,7 +123,7 @@ export default function Navbar({ open, handleDrawerToggle }) {
             <MenuItem onClick={handleCloseUserMenu}>
               <Link to="/user/profile">Profile</Link>
             </MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
           </Menu>
         </Box>
       </Toolbar>

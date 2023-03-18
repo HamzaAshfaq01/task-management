@@ -12,5 +12,9 @@ export const JWT_ACCOUNT_ACTIVATION = process.env.JWT_ACCOUNT_ACTIVATION;
 export const JWT_RESET_PASSWORD = process.env.JWT_RESET_PASSWORD;
 export const YOUR_MAIL = process.env.YOUR_MAIL;
 export const GOOGLE_CLIENT = process.env.GOOGLE_CLIENT;
-export const EMAIL_FROM=process.env.EMAIL_FROM
-export const SECRET_KEY=process.env.SECRET_KEY
+export const EMAIL_FROM = process.env.EMAIL_FROM;
+export const SECRET_KEY = process.env.SECRET_KEY;
+
+export const AUTH_AUDIENCE = process.env.AUTH_AUDIENCE;
+export const AUTH_ISSUER = process.env.AUTH_ISSUER;
+export const AUTH_JWKSURI = process.env.AUTH_JWKSURI;

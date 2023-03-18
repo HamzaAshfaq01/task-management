@@ -13,8 +13,11 @@ import {
 } from "../constants";
 import { encryptData, decryptData } from "../../utils/crypto.util";
 
-export const createTask = (values, closeAddTask) => async (dispatch) => {
-  const token = getCookie("token");
+export const createTask = (values, closeAddTask,token) => async (dispatch) => {
+  // const token = getCookie("token");
+  console.log('====================================');
+  console.log(token,'token');
+  console.log('====================================');
   let body = {
     title: encryptData(values.title),
     description: encryptData(values.description),
@@ -49,9 +52,9 @@ export const createTask = (values, closeAddTask) => async (dispatch) => {
   }
 };
 export const getUserTasks =
-  (limit = "5", offset = "0", status = "") =>
+  (limit = "5", offset = "0", status = "",token) =>
   async (dispatch) => {
-    const token = getCookie("token");
+    // const token = getCookie("token");
     try {
       dispatch(setLoading(true));
 
@@ -85,8 +88,8 @@ export const getUserTasks =
       dispatch(clearLoading(false));
     }
   };
-export const updateTask = (taskID, values,closeAddTask) => async (dispatch) => {
-  const token = getCookie("token");
+export const updateTask = (taskID, values,closeAddTask,token) => async (dispatch) => {
+  // const token = getCookie("token");
   let body = {};
   if (values.title) {
     body = {
@@ -146,8 +149,8 @@ export const updateTask = (taskID, values,closeAddTask) => async (dispatch) => {
     dispatch(clearLoading(false));
   }
 };
-export const deleteTaskByID = (id, closeConfirmDelete) => async (dispatch) => {
-  const token = getCookie("token");
+export const deleteTaskByID = (id, closeConfirmDelete,token) => async (dispatch) => {
+  // const token = getCookie("token");
   try {
     dispatch(setLoading(true));
     const { data } = await axios.delete(`/task/${id}`, {

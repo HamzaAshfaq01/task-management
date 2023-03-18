@@ -4,9 +4,8 @@ import crypto from "crypto";
 const taskScheama = new mongoose.Schema(
   {
     user: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       required: true,
-      ref: "Users",
     },
     title: {
       type: String,
@@ -24,7 +23,6 @@ const taskScheama = new mongoose.Schema(
       default: "PENDING",
     },
     description: String,
-    creator: { type: String, required: true },
   },
   { timestamps: true }
 );

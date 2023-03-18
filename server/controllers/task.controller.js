@@ -5,14 +5,13 @@ export const createTaskController = async (req, res) => {
   const { title, description, due_date, priority } = req.body;
   try {
     const task = await Task.create({
-      user: req.user._id,
+      user: req.auth.sub.split("|")[1],
       title: decryptData(title),
       description: decryptData(description),
       due_date: decryptData(due_date),
       priority: decryptData(priority),
-      creator: req.user.name,
     });
-    return res.status(200).json({ message: "Task Successfull created",task });
+    return res.status(200).json({ message: "Task Successfull created", task });
   } catch (error) {
     return res.status(400).json({
       error: "Task Creation Failed. Please try again",
@@ -23,9 +22,12 @@ export const getAllTaskController = async (req, res) => {
   const limit = parseInt(req.query.limit);
   const offset = parseInt(req.query.offset);
   const status = req.query.status;
-  let where = {};
+  let where = {
+    user: req.auth.sub.split("|")[1],
+  };
   if (status && status != "ALL") {
     where = {
+      user: req.auth.sub.split("|")[1],
       status,
     };
   }
@@ -43,7 +45,6 @@ export const getAllTaskController = async (req, res) => {
         priority: encryptData(task.priority),
         due_date: task.due_date,
         status: encryptData(task.status),
-        creator: encryptData(task.creator),
       })),
       pagination: {
         total: total_pages,

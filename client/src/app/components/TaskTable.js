@@ -118,7 +118,7 @@ const Task = ({
             {tasks?.tasks?.map((task, index) => (
               <TableRow key={index} hover>
                 <TableCell align="center">
-                  <Typography fontWeight="bold">1</Typography>
+                  <Typography fontWeight="bold">{index+1}</Typography>
                 </TableCell>
                 <TableCell>
                   <Typography>{decryptData(task.title)}</Typography>

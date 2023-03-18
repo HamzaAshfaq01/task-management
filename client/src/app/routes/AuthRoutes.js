@@ -9,10 +9,10 @@ import Registration from "../pages/Register"
 const AuthRoutes = () => (
   <Routes>
       <Route path="login" element={<Login />} />
-      <Route path="registration" element={<Registration />} />
-      <Route path="forgot-password" element={<ForgotPassword />} />
-      <Route path="activate/:token" element={<ActivateAccount />} />
-      <Route path="reset-password/:token" element={<ResetPassword />} />
+      {/* <Route path="registration" element={<Registration />} /> */}
+      {/* <Route path="forgot-password" element={<ForgotPassword />} /> */}
+      {/* <Route path="activate/:token" element={<ActivateAccount />} /> */}
+      {/* <Route path="reset-password/:token" element={<ResetPassword />} /> */}
       <Route index element={<Login />} />
   </Routes>
 );

@@ -87,7 +87,7 @@ function Login() {
     >
       <MainContent>
         <Container sx={{ pl: 0, pr: 0 }} maxWidth="sm">
-          <Card
+          {/* <Card
             sx={{
               mt: 3,
               p: 4,
@@ -242,8 +242,8 @@ function Login() {
                 </Box>
               </Grid>
             </Grid>
-          </Card>
-          {/* <LoginWithOtherProvider /> */}
+          </Card> */}
+          <LoginWithOtherProvider />
         </Container>
       </MainContent>
     </Box>

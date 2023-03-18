@@ -32,7 +32,6 @@ const App = () => {
     setMobileOpen(!mobileOpen);
   };
 
-
   React.useEffect(() => {
     error &&
       toast.error(error, {
@@ -75,7 +74,10 @@ const App = () => {
       />
       <CssBaseline />
       <Navbar mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
-      <Sidebar mobileOpen={mobileOpen} handleDrawerToggle={handleDrawerToggle} />
+      <Sidebar
+        mobileOpen={mobileOpen}
+        handleDrawerToggle={handleDrawerToggle}
+      />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Box component="div">

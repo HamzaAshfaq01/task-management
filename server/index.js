@@ -1,15 +1,15 @@
-import dotenv from "dotenv"
-dotenv.config()
-import express from "express"
+import dotenv from "dotenv";
+dotenv.config();
+import express from "express";
 import morgan from "morgan";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
 import connectDB from "./config/db.config.js";
-import authRouter from "./routes/auth.routes.js"
-import userRouter from "./routes/user.routes.js"
-import taskRouter from "./routes/task.routes.js"
-import { PORT, CLIENT_URL, NODE_ENV } from "./constants/config.const.js"
+import authRouter from "./routes/auth.routes.js";
+import userRouter from "./routes/user.routes.js";
+import taskRouter from "./routes/task.routes.js";
+import { PORT, CLIENT_URL, NODE_ENV } from "./constants/config.const.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 global.__basedir = __dirname;
@@ -51,7 +51,9 @@ if (NODE_ENV === "PRODUCTION") {
   app.use(express.static(path.join(__dirname, "./uploads")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../', "client", "build", "index.html"));
+    res.sendFile(
+      path.resolve(__dirname, "../", "client", "build", "index.html")
+    );
   });
 }
 
