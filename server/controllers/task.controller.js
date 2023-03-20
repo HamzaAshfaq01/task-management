@@ -102,8 +102,8 @@ export const updateTaskController = async (req, res) => {
     };
   }
   try {
-    await Task.findOneAndUpdate({ _id: req.params.id }, data);
-    return res.status(200).json({ message: "Task Updated" });
+    let task= await Task.findOneAndUpdate({ _id: req.params.id }, data);
+    return res.status(200).json({ message: "Task Updated",task });
   } catch (error) {
     console.log(error);
     return res.status(400).json({
